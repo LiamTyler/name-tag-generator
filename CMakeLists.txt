@@ -47,13 +47,14 @@ include_directories(
     ${OGLS_ROOT}/project/src
     ${OGLS_ROOT}/ext
     ${OGLS_ROOT}/build/include
+	C:/Users/Tyler/Downloads/freetype-2.9/include
     )
 
 link_directories(
-    LIB_DIRS
     ${GLEW_DIR}/lib/Release/x64
     ${SDL_DIR}/lib/x64
     ${OGLS_ROOT}/build/lib
+	C:/Users/Tyler/Downloads/freetype-2.9/build/Release
     )
 
 set(SOURCES
@@ -84,4 +85,5 @@ target_link_libraries(
     glew32s.lib
     SDL2.lib
     SDL2main.lib
+	freetype.lib
     )

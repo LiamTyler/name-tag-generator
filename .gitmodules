@@ -1,0 +1,3 @@
+[submodule "ext/OpenGL_Starter"]
+	path = ext/OpenGL_Starter
+	url = git@github.com:LiamTyler/OpenGL_Starter.git
