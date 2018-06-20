@@ -59,9 +59,15 @@ link_directories(
 
 set(SOURCES
     src/main.cpp
+    src/ui_manager.cpp
+    src/ui_image.cpp
+    src/ui_text.cpp
     )
 
 set(INCLUDES
+    include/ui_manager.h
+    include/ui_image.h
+    include/ui_text.h
     )
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${INCLUDES})
