@@ -61,13 +61,15 @@ set(SOURCES
     src/main.cpp
     src/ui_manager.cpp
     src/ui_image.cpp
-    src/ui_text.cpp
+    src/ui_textbox.cpp
+    src/ui_widget.cpp
     )
 
 set(INCLUDES
     include/ui_manager.h
     include/ui_image.h
-    include/ui_text.h
+    include/ui_textbox.h
+    include/ui_widget.h
     )
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${INCLUDES})

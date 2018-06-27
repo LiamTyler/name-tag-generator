@@ -1,18 +1,23 @@
 #pragma once
 
 #include "starter.h"
-#include "include/ui_image.h"
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+// #include "include/ui_widget.h"
+
 namespace UI {
+	class Widget;
+
+	struct Character {
+		GLuint TextureID;
+		glm::ivec2 Size;
+		glm::ivec2 Bearing;
+		GLuint Advance;
+	};
+
 	class UIManager {
-		struct Character {
-			GLuint TextureID;
-			glm::ivec2 Size;
-			glm::ivec2 Bearing;
-			GLuint Advance;
-		};
 
 	public:
 		UIManager();
@@ -27,23 +32,37 @@ namespace UI {
 			const std::string& image_frag
 		);
 
-		void SetParameters(float min_x, float max_x, float min_y,
-			float max_y, float min_z, float max_z);
-		void SetProjection(const glm::mat4& P);
+		void AddWidget(Widget* w);
+		void RemoveWidget(Widget* w);
+
+		void Render();
 		
 		bool ChangeFont(const std::string& font, int size);
 
-		void RenderText(const std::string& text, float x, float y, float scale, glm::vec3 color);
-		void RenderImage(const UI::Image& image);
+		void SetProjection(float min_x, float max_x, float min_y,
+			float max_y, float min_z, float max_z);
+		void SetProjection(const glm::mat4& P);
+
+		Shader& getImageShader() { return imageShader_; }
+		GLuint getImageVAO() const { return imageVAO_; }
+
+		Shader& getTextShader() { return textShader_; }
+		GLuint getTextVAO() const { return textVAO_; }
+		GLuint getTextVBO() const { return textVBO_; }
+
 
 		std::string GetFont() const { return font_; }
 		int GetFontSize() const { return font_size_; }
+		const Character& GetCharacter(char c) { return characters_[c]; }
+		glm::mat4 getProjection() const { return projection_; }
 
 	private:
 		bool LoadFont();
 
 		Shader textShader_;
 		Shader imageShader_;
+
+		std::vector<Widget*> widgets_;
 
 		glm::mat4 projection_;
 
@@ -52,11 +71,11 @@ namespace UI {
 		std::string font_;
 		int font_size_;
 		// Character characters_[128];
-		std::unordered_map<GLchar, Character> characters_;
+		std::unordered_map<char, Character> characters_;
 
 		GLuint textVAO_;
 		GLuint textVBO_;
 		GLuint imageVAO_;
 		GLuint imageVBO_;
 	};
-}
+}  // namespace UI

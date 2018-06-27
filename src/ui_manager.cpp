@@ -1,4 +1,6 @@
+#include <algorithm>
 #include "include/ui_manager.h"
+#include "include/ui_widget.h"
 
 namespace UI {
 	UIManager::UIManager() :
@@ -36,6 +38,16 @@ namespace UI {
 			return false;
 		}
 
+		GLfloat vertices[6][4] = {
+			{ -1, -1, 0.0, 1.0 },
+			{ -1, 1,  0.0, 0.0 },
+			{ 1, -1,  1.0, 1.0 },
+
+			{ -1, 1, 0.0, 0.0 },
+			{ 1, -1, 1.0, 1.0 },
+			{ 1, 1,	 1.0, 0.0 }
+		};
+
 		textShader_.AttachShaderFromFile(GL_VERTEX_SHADER, text_vert);
 		textShader_.AttachShaderFromFile(GL_FRAGMENT_SHADER, text_frag);
 		if (!textShader_.CreateAndLinkProgram())
@@ -61,7 +73,7 @@ namespace UI {
 		glGenBuffers(1, &imageVBO_);
 		glBindVertexArray(imageVAO_);
 		glBindBuffer(GL_ARRAY_BUFFER, imageVBO_);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(imageShader_["vertex"]);
 		glVertexAttribPointer(imageShader_["vertex"], 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
 
@@ -81,10 +93,10 @@ namespace UI {
 				std::cout << "Failed to load the glyph: " << (int)c << " = " << (char)c << std::endl;
 				continue;
 			}
-			float w = face_->glyph->bitmap.width;
-			float h = face_->glyph->bitmap.rows;
-			float bx = face_->glyph->bitmap_left;
-			float by = face_->glyph->bitmap_top;
+			auto w = face_->glyph->bitmap.width;
+			auto h = face_->glyph->bitmap.rows;
+			auto bx = face_->glyph->bitmap_left;
+			auto by = face_->glyph->bitmap_top;
 			GLuint texture;
 			glGenTextures(1, &texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
@@ -118,6 +130,31 @@ namespace UI {
 		return true;
 	}
 
+	void UIManager::AddWidget(Widget* w) {
+		if (w != nullptr)
+			widgets_.push_back(w);
+	}
+
+	void UIManager::RemoveWidget(Widget* w) {
+		const auto& e = std::find(widgets_.begin(), widgets_.end(), w);
+		if (e != widgets_.end())
+			widgets_.erase(e);
+	}
+
+	void UIManager::Render() {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		std::sort(widgets_.begin(), widgets_.end(), [](const Widget* w1, const Widget* w2) -> bool { return *w1 < *w2; });
+		for (const auto& w : widgets_) {
+			if (w->isVisible()) {
+				w->Render();
+				std::cout << w->getDepth() << " ";
+			}
+		}
+		std::cout << std::endl;
+		glDisable(GL_BLEND);
+	}
+
 	// TODO: Delete the old font
 	bool UIManager::ChangeFont(const std::string& font, int size) {
 		font_ = font;
@@ -125,8 +162,8 @@ namespace UI {
 		return LoadFont();
 	}
 
-	void  UIManager::SetParameters(float min_x, float max_x, float min_y,
-								   float max_y, float min_z, float max_z)
+	void  UIManager::SetProjection(float min_x, float max_x, float min_y,
+		float max_y, float min_z, float max_z)
 	{
 		SetProjection(glm::ortho(min_x, max_x, min_y, max_y, min_z, max_z));
 	}
@@ -135,45 +172,7 @@ namespace UI {
 		projection_ = P;
 	}
 
-	void UIManager::RenderText(const std::string& text, float x, float y, float scale, glm::vec3 color)
-	{
-		if (!text.length())
-			return;
-		textShader_.Enable();
-		glUniformMatrix4fv(textShader_["projection"], 1, GL_FALSE, glm::value_ptr(projection_));
-		glUniform3f(textShader_["textColor"], color.x, color.y, color.z);
-		glActiveTexture(GL_TEXTURE0);
-		glBindVertexArray(textVAO_);
-
-		std::string::const_iterator c;
-		for (c = text.begin(); c != text.end(); c++)
-		{
-			Character ch = characters_[*c];
-
-			float xpos = x + ch.Bearing.x * scale;
-			float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
-
-			float w = ch.Size.x * scale;
-			float h = ch.Size.y * scale;
-			float vertices[6][4] = {
-				{ xpos,     ypos,       0.0, 1.0 },
-				{ xpos,     ypos + h,   0.0, 0.0 },
-				{ xpos + w, ypos,       1.0, 1.0 },
-
-				{ xpos,     ypos + h,   0.0, 0.0 },
-				{ xpos + w, ypos,       1.0, 1.0 },
-				{ xpos + w, ypos + h,   1.0, 0.0 }
-			};
-			glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-			glUniform1i(textShader_["tex"], 0);
-			glBindBuffer(GL_ARRAY_BUFFER, textVBO_);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-			x += (ch.Advance >> 6) * scale;
-		}
-	}
-
+	/*
 	void UIManager::RenderImage(const UI::Image& image) {
 		imageShader_.Enable();
 		glUniformMatrix4fv(imageShader_["projection"], 1, GL_FALSE, glm::value_ptr(projection_));
@@ -182,4 +181,5 @@ namespace UI {
 		glBindBuffer(GL_ARRAY_BUFFER, imageVBO_);
 		image.Render(imageShader_);
 	}
-}
+	*/
+}  // namespace UI
