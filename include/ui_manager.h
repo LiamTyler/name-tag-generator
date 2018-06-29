@@ -1,6 +1,6 @@
 #pragma once
 
-#include "starter.h"
+#include "progression.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H

@@ -1,3 +1,4 @@
-[submodule "ext/OpenGL_Starter"]
-	path = ext/OpenGL_Starter
-	url = git@github.com:LiamTyler/OpenGL_Starter.git
+[submodule "ext/Progression"]
+	path = ext/Progression
+    url = https://github.com/LiamTyler/Progression.git
+    branch = windows
