@@ -148,10 +148,8 @@ namespace UI {
 		for (const auto& w : widgets_) {
 			if (w->isVisible()) {
 				w->Render();
-				std::cout << w->getDepth() << " ";
 			}
 		}
-		std::cout << std::endl;
 		glDisable(GL_BLEND);
 	}
 

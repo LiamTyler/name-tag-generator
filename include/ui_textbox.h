@@ -1,6 +1,7 @@
 #pragma once
 
 #include "include/ui_widget.h"
+#include <string>
 
 namespace UI {
 	class Textbox : public Widget {

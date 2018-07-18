@@ -40,12 +40,12 @@ namespace UI {
 
 	void Image::SetImage(const std::string& fname)
 	{
-		texture_ = Texture(fname);
+		texture_ = Progression::Texture(fname);
 	}
 
-	void Image::SetImage(const ::Image& image)
+	void Image::SetImage(const Progression::Image& image)
 	{
-		texture_ = Texture(image);
+		texture_ = Progression::Texture(image);
 	}
 
 }  // namespace UI

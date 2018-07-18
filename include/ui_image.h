@@ -1,7 +1,8 @@
 #pragma once
 
-#include "progression.h"
 #include "include/ui_widget.h"
+#include "include/image.h"
+#include "include/texture.h"
 
 namespace UI {
 
@@ -13,10 +14,10 @@ namespace UI {
 		void Render() const override;
 
 		void SetImage(const std::string& fname);
-		void SetImage(const ::Image& image);
+		void SetImage(const Progression::Image& image);
 
 	private:
-		Texture texture_;
+		Progression::Texture texture_;
 	};
 
 }  // namespace UI

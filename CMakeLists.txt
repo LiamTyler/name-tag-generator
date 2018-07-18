@@ -6,15 +6,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
-set(PROGRESSION_DIR ${CMAKE_SOURCE_DIR}/ext/Progression)
-add_subdirectory(${PROGRESSION_DIR})
-
-list(APPEND CMAKE_MODULE_PATH ${PROGRESSION_DIR}/cmake)
-include(Progression)
 
 include_directories(
     ${CMAKE_SOURCE_DIR}
 	C:/Users/Tyler/Downloads/freetype-2.9/include
+    ext/
     )
 
 link_directories(
@@ -27,6 +23,10 @@ set(SOURCES
     src/ui_image.cpp
     src/ui_textbox.cpp
     src/ui_widget.cpp
+    src/image.cpp
+    src/texture.cpp
+    src/shader.cpp
+    src/canvas.cpp
     )
 
 set(INCLUDES
@@ -34,6 +34,12 @@ set(INCLUDES
     include/ui_image.h
     include/ui_textbox.h
     include/ui_widget.h
+    include/image.h
+    include/texture.h
+    include/shader.h
+    include/stb_image.h
+    include/stb_image_write.h
+    include/canvas.h
     )
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${INCLUDES})
@@ -45,4 +51,9 @@ set_target_properties(
 
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 
-target_link_libraries(${PROJECT_NAME} ${PROGRESSION_LIBS} freetype.lib)
+add_subdirectory(ext/nanogui)
+include_directories(ext/nanogui/include)
+include_directories(${NANOGUI_EXTRA_INCS})
+add_definitions(${NANOGUI_EXTRA_DEFS})
+
+target_link_libraries(${PROJECT_NAME} freetype.lib nanogui ${NANOGUI_EXTRA_LIBS})

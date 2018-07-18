@@ -1,11 +1,12 @@
 #pragma once
 
-#include "progression.h"
-
+#include <nanogui/nanogui.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
 // #include "include/ui_widget.h"
+#include "include/shader.h"
+#include "glm/glm.hpp"
 
 namespace UI {
 	class Widget;
@@ -43,10 +44,10 @@ namespace UI {
 			float max_y, float min_z, float max_z);
 		void SetProjection(const glm::mat4& P);
 
-		Shader& getImageShader() { return imageShader_; }
+		Progression::Shader& getImageShader() { return imageShader_; }
 		GLuint getImageVAO() const { return imageVAO_; }
 
-		Shader& getTextShader() { return textShader_; }
+		Progression::Shader& getTextShader() { return textShader_; }
 		GLuint getTextVAO() const { return textVAO_; }
 		GLuint getTextVBO() const { return textVBO_; }
 
@@ -59,8 +60,8 @@ namespace UI {
 	private:
 		bool LoadFont();
 
-		Shader textShader_;
-		Shader imageShader_;
+		Progression::Shader textShader_;
+		Progression::Shader imageShader_;
 
 		std::vector<Widget*> widgets_;
 
